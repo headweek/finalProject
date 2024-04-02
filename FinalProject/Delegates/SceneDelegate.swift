@@ -10,9 +10,11 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
-
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(changeVC(notification: )), name: NSNotification.Name("changeVc"), object: nil)
+        
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
@@ -23,6 +25,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = window
     }
 
+    @objc func changeVC(notification: Notification) {
+        guard let isLogin = notification.userInfo?["isLogin"] as? Bool else { return }
+        if isLogin {
+            self.window?.rootViewController = TabBar()
+        } else {
+            self.window?.rootViewController = UINavigationController(rootViewController: ViewController())
+        }
+    }
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
