@@ -8,25 +8,26 @@
 import UIKit
 import WebKit
 
-class WebViewController: UIViewController {
+final class WebViewController: UIViewController {
     
     weak var delegate: WebViewDelegate?
     
     var webView: WKWebView!
         var url: URL
         
-        init(url: URL) {
-            self.url = url
-            super.init(nibName: nil, bundle: nil)
-        }
+    init(url: URL) {
+        self.url = url
+        super.init(nibName: nil, bundle: nil)
+        setupWebView()
+    }
         
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
+    //MARK: ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupWebView()
     }
 
     private func setupWebView() {
@@ -42,7 +43,6 @@ protocol WebViewDelegate: AnyObject {
 }
 
 extension WebViewController: WKNavigationDelegate {
-    
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print("WebView")
@@ -66,8 +66,8 @@ extension WebViewController: WKNavigationDelegate {
                 // успешно
                 print("User authorized: \(userId)")
                 print("Access Token: \(accessToken)")
-                let resultVC = ResultViewController()
-                navigationController?.pushViewController(resultVC, animated: true)
+                NotificationCenter.default.post(name: NSNotification.Name("changeVc"), object: nil, userInfo: ["isLogin" : true])
+                
             } else if let error = parameters["error"] {
                 // Ошибка
                 print("Authorization error: \(error)")
