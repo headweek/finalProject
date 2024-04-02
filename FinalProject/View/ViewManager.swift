@@ -20,6 +20,12 @@ final class ViewManager {
         return btn
     }
     
+    static func backgroundImage (contentMode: UIImageView.ContentMode) -> UIImageView {
+        let image: UIImageView = .init(image: .back)
+        
+        return image
+    }
+    
 }
 
 
