@@ -10,13 +10,14 @@ import WebKit
 
 final class ViewManager {
     //MARK: Функция добавления кнопки
-    static func createBtn(_ title: String, btnColor: UIColor = .signInColor, cornenRadius: CGFloat = 14, textColor: UIColor = .white, action: UIAction) -> UIButton {
+    static func createBtn(_ title: String, btnColor: UIColor = .signInColor, cornenRadius: CGFloat = 14, textColor: UIColor = .white, action: UIAction, backgroundColor: UIColor = .black) -> UIButton {
         let btn = UIButton(primaryAction: action)
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.heightAnchor.constraint(equalToConstant: 50).isActive = true
         btn.setTitle(title, for: .normal)
         btn.setTitleColor(textColor, for: .normal)
         btn.layer.cornerRadius = cornenRadius
+        btn.backgroundColor = backgroundColor
         return btn
     }
     

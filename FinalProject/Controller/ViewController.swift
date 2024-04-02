@@ -9,9 +9,13 @@
 import UIKit
 import WebKit
 
+//"https://oauth.vk.com/authorize?client_id=51892163&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=offline&response_type=token&v=5.199"
+
 class ViewController: UIViewController{
     
-    private var webView : WebViewController?
+    private var isFinish: Bool = false
+    
+    private var webView = WebViewController(url: URL(string: "https://oauth.vk.com/authorize?client_id=51892163&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=offline&response_type=token&v=5.199")!)
     
     lazy var titleLabel: UILabel = {
         $0.text = "Error Nil"
@@ -22,7 +26,7 @@ class ViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        webView.delegate = self
         
         view.addSubview(backgroundImage)
         view.addSubview(activituView)
@@ -35,16 +39,8 @@ class ViewController: UIViewController{
             backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
-        // Добавление кнопки "Вход через VK"
-        loginButton = UIButton(type: .system)
-        loginButton.setTitle("Войти", for: .normal)
-        loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         view.addSubview(loginButton)
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.tintColor = .white
-        loginButton.backgroundColor = .black
-        loginButton.layer.cornerRadius = 30
+        
         NSLayoutConstraint.activate([
             loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
             loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -61,15 +57,20 @@ class ViewController: UIViewController{
         view.addSubview(titleLabel)
     }
     
-    private lazy var loginButton = ViewManager.createBtn("Login", action: action)
+    private lazy var loginButton = ViewManager.createBtn("Войти", action: action)
     private lazy var backgroundImage = ViewManager.backgroundImage(contentMode: .scaleAspectFill)
     
     
     
     private lazy var action = UIAction {[weak self] _ in
         guard let self else { return }
-        guard let webView else { return }
-        self.navigationController?.pushViewController(webView, animated: true)
+        if isFinish {
+            self.navigationController?.pushViewController(webView, animated: true)
+        }else{
+            self.navigationController?.pushViewController(webView, animated: true)
+            print("error")
+        }
+        
     }
     
     private lazy var activituView: UIActivityIndicatorView = {
@@ -79,12 +80,12 @@ class ViewController: UIViewController{
         return $0
     }(UIActivityIndicatorView())
     
-    @objc private func loginButtonTapped() {
-        // Запуск процесса авторизации VK
-        let url = URL(string: "https://oauth.vk.com/authorize?client_id=51892163&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=offline&response_type=token&v=5.199")!
-        let webViewController = WebViewController(url: url)
-        navigationController?.pushViewController(webViewController, animated: true)
-    }
-
 }
 
+extension ViewController: WebViewDelegate {
+    
+    func didFinish() {
+        isFinish = true
+    }
+    
+}
