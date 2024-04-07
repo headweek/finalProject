@@ -11,16 +11,16 @@ import UIKit
 final class ViewController: UIViewController{
     
     private var isFinish = false
+
     
-    private var webView = WebViewController(url: URL(string: "https://oauth.vk.com/authorize?client_id=51892163&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=offline&response_type=token&v=5.199")!)
+    
+    private var webView = WebViewController()
     
     //MARK: ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.delegate = self
         settupView()
-        print(FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask).first!)
-        
     }
     
     //MARK: Functions

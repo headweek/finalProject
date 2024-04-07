@@ -28,13 +28,14 @@ final class ViewManager {
         return image
     }
     
-    static func getLabel(_ text: String, textColor: UIColor = .white, textAligment: NSTextAlignment, font: UIFont = .boldSystemFont(ofSize: 18)) -> UILabel {
+    static func getLabel(_ text: String, textColor: UIColor = .white, textAligment: NSTextAlignment, font: UIFont = .boldSystemFont(ofSize: 18), numberOfLines: Int = 0) -> UILabel {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = text
         label.textColor = textColor
         label.textAlignment = textAligment
         label.font = font
+        label.numberOfLines = numberOfLines
         return label
     }
     
@@ -43,6 +44,25 @@ final class ViewManager {
         imageView.frame.size = size
         return imageView.image
     }
+    
+    static func getLabelForHeader() -> UILabel {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .black
+        label.font = .boldSystemFont(ofSize: 34)
+        label.textAlignment = .left
+        return label
+    }
+    
+    static func getLinkLabel() -> UILabel {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .boldSystemFont(ofSize: 14)
+        label.textColor = .black
+        label.textAlignment = .left
+        return label
+    }
+    
     
 }
 

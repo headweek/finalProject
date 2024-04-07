@@ -13,10 +13,8 @@ final class WebViewController: UIViewController {
     weak var delegate: WebViewDelegate?
     
     var webView: WKWebView!
-        var url: URL
         
-    init(url: URL) {
-        self.url = url
+    init() {
         super.init(nibName: nil, bundle: nil)
         setupWebView()
     }
@@ -34,7 +32,9 @@ final class WebViewController: UIViewController {
         webView = WKWebView()
         webView.navigationDelegate = self
         view = webView
-        webView.load(URLRequest(url: url))
+        if let req = VKService.getAuthRequest() {
+            webView.load(req)
+        }
     }
 }
 
@@ -50,6 +50,8 @@ extension WebViewController: WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        
+        
         
         if let url = navigationAction.request.url,
            url.absoluteString.hasPrefix("https://oauth.vk.com/blank.html"),
