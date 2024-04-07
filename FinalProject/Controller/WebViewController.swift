@@ -62,10 +62,12 @@ extension WebViewController: WKNavigationDelegate {
                     let key = pair[0], value = pair[1]
                     result[key] = value
                 }
+            
             if let accessToken = parameters["access_token"], let userId = parameters["user_id"] {
                 // успешно
                 print("User authorized: \(userId)")
                 print("Access Token: \(accessToken)")
+                UserDefaults.standard.setValue(accessToken, forKey: "access_token")
                 NotificationCenter.default.post(name: NSNotification.Name("changeVc"), object: nil, userInfo: ["isLogin" : true])
                 
             } else if let error = parameters["error"] {

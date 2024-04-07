@@ -19,6 +19,8 @@ final class ViewController: UIViewController{
         super.viewDidLoad()
         webView.delegate = self
         settupView()
+        print(FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask).first!)
+        
     }
     
     //MARK: Functions
