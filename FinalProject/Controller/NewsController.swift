@@ -57,7 +57,15 @@ extension NewsController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Cell.reuseId, for: indexPath) as? Cell else { return UICollectionViewCell() }
         let news = newsData[indexPath.item]
-        cell.configCell(news)
+        if let urlString = news.imageURL {
+            if let url = URL(string: urlString) {
+                ImageLoader.loadImage(from: url) { image in
+                    guard let image else { return }
+                    cell.configCell(news, image: image)
+                    cell.stopActivity()
+                }
+            }
+        }
         return cell
     }
     
@@ -69,7 +77,19 @@ extension NewsController: UICollectionViewDataSource {
 }
 
 extension NewsController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let news = newsData[indexPath.item]
+        if let urlString = news.imageURL {
+            if let url = URL(string: urlString) {
+                ImageLoader.loadImage(from: url) { image in
+                    guard let image else { return }
+                    let vc = FullInforamtionController()
+                    vc.configView(image: image, data: news)
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+        }
+    }
 }
 
 extension NewsController: UITextFieldDelegate {
@@ -80,7 +100,7 @@ extension NewsController: UITextFieldDelegate {
             case .success(let newsData):
                 var newsModel = [ItemData]()
                 for items in newsData.articles {
-                    let item = ItemData(id: UUID().uuidString, image: "someImg", link: items.url, date: items.publishedAt, description: items.description, title: items.title)
+                    let item = ItemData(id: UUID().uuidString, imageURL: items.urlToImage, link: items.url, date: items.publishedAt, description: items.description, title: items.title, content: items.content, author: items.author)
                     newsModel.append(item)
                 }
                 self.newsData = newsModel
