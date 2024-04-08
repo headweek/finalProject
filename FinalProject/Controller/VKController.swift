@@ -13,6 +13,14 @@ final class VKController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         settupView()
+        VKService.getWall { result in
+            switch result {
+            case .success(let vkData):
+                print(vkData)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     //MARK: Funcitons
@@ -42,7 +50,7 @@ final class VKController: UIViewController {
 
 extension VKController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

@@ -9,9 +9,11 @@ import Foundation
 
 struct ItemData: Decodable {
     let id: String
-    let image: String
+    let imageURL: String?
     let link: String?
     let date: String?
     let description: String?
     let title: String?
+    let content: String?
+    let author: String?
 }
