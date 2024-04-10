@@ -51,8 +51,6 @@ extension WebViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         
-        
-        
         if let url = navigationAction.request.url,
            url.absoluteString.hasPrefix("https://oauth.vk.com/blank.html"),
            let fragment = url.fragment {
