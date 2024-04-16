@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let scene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: scene)
-        if let token = UserDefaults.standard.string(forKey: "access_token") {
+        if UserDefaults.standard.string(forKey: "access_token") != nil {
             window.rootViewController = TabBar()
         } else {
             window.rootViewController = UINavigationController(rootViewController: ViewController())
@@ -72,7 +72,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 
 

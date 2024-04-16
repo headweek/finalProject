@@ -32,6 +32,8 @@
 		9B492EDB2BB790A80091EE2E /* FinalProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9B492ED92BB790A80091EE2E /* FinalProject.xcdatamodeld */; };
 		9B492EDD2BB790A90091EE2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B492EDC2BB790A90091EE2E /* Assets.xcassets */; };
 		9B492EE02BB790A90091EE2E /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 9B492EDF2BB790A90091EE2E /* Base */; };
+		9B8E35D82BCA5C4000C7EAD5 /* Data+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8E35D62BCA5C4000C7EAD5 /* Data+CoreDataProperties.swift */; };
+		9B8E35DB2BCA5D2400C7EAD5 /* CoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8E35DA2BCA5D2400C7EAD5 /* CoreManager.swift */; };
 		9BAEE99B2BB9E4D400465882 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BAEE99A2BB9E4D400465882 /* WebViewController.swift */; };
 		9BF019252BB9A85800F1147C /* ViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF019242BB9A85800F1147C /* ViewManager.swift */; };
 		9BF019282BB9A8F100F1147C /* Color + String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF019272BB9A8F100F1147C /* Color + String.swift */; };
@@ -65,6 +67,8 @@
 		9B492EDC2BB790A90091EE2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9B492EDF2BB790A90091EE2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9B492EE12BB790A90091EE2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B8E35D62BCA5C4000C7EAD5 /* Data+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9B8E35DA2BCA5D2400C7EAD5 /* CoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreManager.swift; sourceTree = "<group>"; };
 		9BAEE99A2BB9E4D400465882 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		9BF019242BB9A85800F1147C /* ViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewManager.swift; sourceTree = "<group>"; };
 		9BF019272BB9A8F100F1147C /* Color + String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color + String.swift"; sourceTree = "<group>"; };
@@ -129,6 +133,7 @@
 		9B492ECF2BB790A80091EE2E /* FinalProject */ = {
 			isa = PBXGroup;
 			children = (
+				9B8E35D92BCA5C4800C7EAD5 /* CoreData */,
 				18934B882BC2D45C00E15DBD /* Services */,
 				186BFBC22BBC3F32002BD428 /* Animate */,
 				9BF019262BB9A8D900F1147C /* Extension */,
@@ -142,6 +147,15 @@
 				9B492ED92BB790A80091EE2E /* FinalProject.xcdatamodeld */,
 			);
 			path = FinalProject;
+			sourceTree = "<group>";
+		};
+		9B8E35D92BCA5C4800C7EAD5 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				9B8E35D62BCA5C4000C7EAD5 /* Data+CoreDataProperties.swift */,
+				9B8E35DA2BCA5D2400C7EAD5 /* CoreManager.swift */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		9BF0191D2BB9817D00F1147C /* Controller */ = {
@@ -273,6 +287,7 @@
 				18934B5E2BC2B87D00E15DBD /* NewsCell.swift in Sources */,
 				9BF019252BB9A85800F1147C /* ViewManager.swift in Sources */,
 				9B492ED52BB790A80091EE2E /* ViewController.swift in Sources */,
+				9B8E35D82BCA5C4000C7EAD5 /* Data+CoreDataProperties.swift in Sources */,
 				9B492ED12BB790A80091EE2E /* AppDelegate.swift in Sources */,
 				186BFBC82BBC425C002BD428 /* StorageController.swift in Sources */,
 				18934B8E2BC2DE7400E15DBD /* NewsData.swift in Sources */,
@@ -291,6 +306,7 @@
 				9B119DCF2BC73C680097C032 /* UserResponce.swift in Sources */,
 				9BAEE99B2BB9E4D400465882 /* WebViewController.swift in Sources */,
 				186BFBC62BBC420C002BD428 /* TabBar.swift in Sources */,
+				9B8E35DB2BCA5D2400C7EAD5 /* CoreManager.swift in Sources */,
 				18E3809C2BC3CDBC005D4C22 /* FullInforamtionController.swift in Sources */,
 				9B119DCD2BC73C490097C032 /* User.swift in Sources */,
 			);
