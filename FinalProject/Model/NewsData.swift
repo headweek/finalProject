@@ -24,5 +24,6 @@ struct NewsArticles: Decodable {
 }
 
 struct NewsItem: Decodable {
+    let id: String?
     let name: String?
 }

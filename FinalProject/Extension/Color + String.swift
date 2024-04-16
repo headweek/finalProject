@@ -15,3 +15,11 @@ extension UIColor {
 extension String {
     static let accessToken = "access_token"
 }
+
+extension String {
+    var toHost: String? {
+        guard let encodeUrl = self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let components = URLComponents(string: encodeUrl) else { return nil }
+        return "\(components.scheme ?? "")://\(components.host ?? "")"
+    }
+}
