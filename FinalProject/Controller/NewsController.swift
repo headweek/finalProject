@@ -10,6 +10,7 @@ import UIKit
 final class NewsController: UIViewController {
 
     private var newsData = [ItemData]()
+    private var images = [String : UIImage]()
     
     var profileViewModel = ProfileViewModel()
     
@@ -30,7 +31,6 @@ final class NewsController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         settupView()
-        
         profileViewModel.loadProfileInfo { [weak self] in
             DispatchQueue.main.async {
                 self?.updateNavigationBar()
@@ -71,6 +71,10 @@ final class NewsController: UIViewController {
         view.addSubview(collection)
         navigationItem.searchController = searchController
     }
+    private func getImages(_ image: UIImage, imageName: String) {
+        self.images[imageName] = image
+    }
+    
     //MARK: View elements
     private lazy var searchController: UISearchController = {
         $0.searchBar.returnKeyType = .default
@@ -88,7 +92,7 @@ final class NewsController: UIViewController {
     
     private lazy var layout: UICollectionViewFlowLayout = {
         $0.headerReferenceSize = CGSize(width: view.frame.width, height: 90)
-        $0.itemSize = CGSize(width: view.frame.width - 40, height: 600)
+        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         $0.minimumLineSpacing = 10
         $0.minimumInteritemSpacing = 100
         return $0
@@ -105,15 +109,11 @@ extension NewsController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Cell.reuseId, for: indexPath) as? Cell else { return UICollectionViewCell() }
         let news = newsData[indexPath.item]
-        if let urlString = news.imageURL {
-            if let url = URL(string: urlString) {
-                ImageLoader.loadImage(from: url) { image in
-                    guard let image else { return }
-                    cell.configCell(news, image: image)
-                    cell.stopActivity()
-                }
-            }
-        }
+        guard let urlString = news.imageURL else { return UICollectionViewCell() }
+        guard let image = self.images[urlString] else { return UICollectionViewCell() }
+        cell.delegate = self
+        cell.configCell(news, image: image)
+        cell.stopActivity()
         return cell
     }
     
@@ -148,13 +148,35 @@ extension NewsController: UITextFieldDelegate {
             case .success(let newsData):
                 var newsModel = [ItemData]()
                 for items in newsData.articles {
-                    let item = ItemData(id: UUID().uuidString, imageURL: items.urlToImage, link: items.url, date: items.publishedAt, description: items.description, title: items.title, content: items.content, author: items.author)
-                    newsModel.append(item)
+                    if let id = items.source.id {
+                        let item = ItemData(id: id, imageURL: items.urlToImage, link: items.url, date: items.publishedAt, description: items.description, title: items.title, content: items.content, author: items.author, addStorage: false)
+                        newsModel.append(item)
+                    }
                 }
+                
+                var countItems = newsModel.count
+                
                 self.newsData = newsModel
-                DispatchQueue.main.async {
-                    self.collection.reloadData()
+                
+                for item in newsModel {
+                    if let urlString = item.imageURL {
+                        if let url = URL(string: urlString) {
+                            ImageLoader.loadImage(from: url) { image in
+                                if let image = image {
+                                    self.getImages(image, imageName: urlString)
+                                    countItems -= 1
+                                    if countItems == 0 {
+                                        DispatchQueue.main.async {
+                                            self.collection.reloadData()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
                 }
+                
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -162,5 +184,12 @@ extension NewsController: UITextFieldDelegate {
         
         self.searchController.isActive = false
         return true
+    }
+}
+
+extension NewsController: CellDelegate {
+    func openSafariLink(url: String) {
+        guard let url = URL(string: url) else { return }
+        UIApplication.shared.open(url)
     }
 }

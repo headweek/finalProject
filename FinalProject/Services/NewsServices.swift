@@ -36,12 +36,10 @@ final class NewsServices {
             guard let data else { return }
             
             if let decodeData = try? JSONDecoder().decode(NewsData.self, from: data) {
-                print(decodeData)
                 complition(.success(decodeData))
             }
         }.resume()
         
     }
-
     
 }

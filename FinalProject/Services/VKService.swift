@@ -47,14 +47,16 @@ final class VKService {
     static func getWallRequest() -> URLRequest? {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
-        urlComponents.host = "dev.vk.com"
-        urlComponents.path = "/ru/method/wall.get"
+        urlComponents.host = "api.vk.com"
+        urlComponents.path = "/method/wall.get"
+        
+        guard let token = UserDefaults.standard.string(forKey: .accessToken) else { return nil }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: .accessToken, value: "vk1.a.xVFhEvP23gmBYeiV30eBWj1CbQZtaYt45KAE6bIsRVO31Vc_rX2zeOHFK8lntjI0gDouSdHWLQcvgyK_SVMsbAMar0DBoHXcQmJ269BqvirCjgAcGt_SnmswN6NlLB3TvbhyB4vQu-B4yYVA5cjfV_z5hx8AmDudaELnFXq_dNhyYas5xMflUc12vk34c13PfX3Q8EDlyjpJzKknCi2Ykw"),
+            URLQueryItem(name: .accessToken, value: token),
             URLQueryItem(name: "domain", value: "errornil"),
             URLQueryItem(name: "v", value: "5.199"),
-            
+            URLQueryItem(name: "count", value: "10")
         ]
         
         guard let url = urlComponents.url else { return nil }
@@ -71,7 +73,6 @@ final class VKService {
             guard let data else { return }
             
             if let decodeData = try? JSONDecoder().decode(Welcome.self, from: data) {
-                print(decodeData)
                 compltion(.success(decodeData))
             }
         }.resume()
