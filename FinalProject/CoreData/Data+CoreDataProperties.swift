@@ -9,17 +9,18 @@
 import Foundation
 import CoreData
 
-@objc(Data)
-public class Data: NSManagedObject {
+@objc(CData)
+public class CData: NSManagedObject {
 
 }
 
-extension Data {
+extension CData {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Data> {
-        return NSFetchRequest<Data>(entityName: "Data")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<CData> {
+        return NSFetchRequest<CData>(entityName: "CData")
     }
 
+    @NSManaged public var id: String?
     @NSManaged public var discription: String?
     @NSManaged public var image: String?
     @NSManaged public var date: String?
@@ -28,7 +29,7 @@ extension Data {
 
 }
 
-extension Data : Identifiable {
+extension CData : Identifiable {
     
     //MARK: Update Core Data
     

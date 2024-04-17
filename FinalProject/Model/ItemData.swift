@@ -16,5 +16,5 @@ struct ItemData: Decodable {
     let title: String?
     let content: String?
     let author: String?
-    let addStorage: Bool
+    var addStorage: Bool
 }

@@ -18,7 +18,7 @@ final class ImageLoader {
             completion(cashedImage)
         } else {
             let request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad, timeoutInterval: 10)
-            URLSession.shared.dataTask(with: url) { data, response, error in
+            URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data, error == nil else {
                     print("Failed to load image:", error?.localizedDescription ?? "Unknown error")
                     completion(nil)

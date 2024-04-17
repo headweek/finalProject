@@ -99,7 +99,22 @@ final class VKController: UIViewController {
                         }
                     }
                     
-                    let itemData = ItemData(id: String(id), imageURL: url, link: nil, date: date, description: text, title: nil, content: nil, author: nil, addStorage: false)
+                    var isAddStorage = false
+                    
+                    let storgateData = CoreManager.shared.posts
+                    
+                    for storageItem in storgateData {
+                        let itemId = "\(id)\(date)"
+                        
+                        if let storageId = storageItem.id {
+                            if itemId == storageId {
+                                isAddStorage = true
+                            }
+                        }
+                        
+                    }
+                    
+                    let itemData = ItemData(id: String(id), imageURL: url, link: nil, date: date, description: text, title: nil, content: nil, author: nil, addStorage: isAddStorage)
                     items.append(itemData)
                 }
                 
