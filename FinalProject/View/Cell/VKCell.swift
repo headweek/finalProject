@@ -8,9 +8,11 @@
 import UIKit
 
 final class VKCell: UICollectionViewCell {
-    private var url = String()
-    static let reuseId = "VKCell"
+    private var imageName = String()
+    private let cData = CoreManager.shared
+    private var itemData: ItemData?
     
+    static let reuseId = "VKCell"
     //MARK: Init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -29,6 +31,7 @@ final class VKCell: UICollectionViewCell {
     }
     
     func configCell(_ data: ItemData, image: UIImage) {
+        self.itemData = data
         if data.addStorage {
             self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
         } else {
@@ -37,6 +40,9 @@ final class VKCell: UICollectionViewCell {
         self.image.image = image
         self.descriptionLabel.text = data.description
         self.dateLabel.text = data.date
+        if let date = data.date {
+            self.imageName = "\(data.id)\(date)"
+        }
         addSubview(cellView)
         NSLayoutConstraint.activate([
             cellView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
@@ -110,7 +116,28 @@ final class VKCell: UICollectionViewCell {
     //MARK: Action elements
     private lazy var moveToStorageAction = UIAction { [weak self] _ in
         guard let self else { return }
-        self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
+        guard let image = self.image.image else { return }
+        guard let imageData = image.jpegData(compressionQuality: 1) else { return }
+        guard let itemData else { return }
+        guard let date = itemData.date else { return }
+        let storage = StorageManager()
+        let posts = cData.posts
+        
+        if itemData.addStorage {
+            for post in posts {
+                if let id = post.id {
+                    if id == "\(itemData.id)\(date)" {
+                        self.itemData?.addStorage = false
+                        self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
+                        post.deleteData()
+                    }
+                }
+            }
+        } else {
+            self.itemData?.addStorage = true
+            self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            cData.createData(item: itemData)
+        }
     }
 }
 

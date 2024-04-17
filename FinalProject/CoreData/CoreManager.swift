@@ -11,7 +11,7 @@ import CoreData
 class CoreManager {
     
     static let shared = CoreManager()
-    var posts = [Data]()
+    var posts = [CData]()
     
     private init() {
         readData()
@@ -45,7 +45,10 @@ class CoreManager {
     
     //MARK: Create Core Data
     func createData (item: ItemData) {
-        let createData = Data(context: persistentContainer.viewContext)
+        let createData = CData(context: persistentContainer.viewContext)
+        if let date = item.date {
+            createData.id = "\(item.id)\(date)"
+        }
         createData.image = item.imageURL
         createData.date = item.date
         createData.discription = item.description
@@ -59,7 +62,7 @@ class CoreManager {
     //MARK: Read Core Data
     
     func readData () {
-        let post = Data.fetchRequest()
+        let post = CData.fetchRequest()
         if let posts = try? persistentContainer.viewContext.fetch(post) {
             self.posts = posts
         }
