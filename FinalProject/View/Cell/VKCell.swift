@@ -130,6 +130,7 @@ final class VKCell: UICollectionViewCell {
                         self.itemData?.addStorage = false
                         self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
                         post.deleteData()
+                        storage.deleteImg("\(itemData.id)\(date)")
                     }
                 }
             }
@@ -137,6 +138,7 @@ final class VKCell: UICollectionViewCell {
             self.itemData?.addStorage = true
             self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
             cData.createData(item: itemData)
+            storage.saveImage(imageData, imageName: "\(itemData.id)\(date)")
         }
     }
 }

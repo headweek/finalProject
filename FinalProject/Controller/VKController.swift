@@ -39,6 +39,11 @@ final class VKController: UIViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.collection.reloadData()
+    }
+    
     //new
     func updateNavigationBar() {
         

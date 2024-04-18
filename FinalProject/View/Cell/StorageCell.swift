@@ -1,30 +1,30 @@
 //
-//  VkCell.swift
+//  StorageCell.swift
 //  FinalProject
 //
-//  Created by apple on 07.04.2024.
+//  Created by apple on 18.04.2024.
 //
 
 import UIKit
 
-protocol CellDelegate: AnyObject {
+protocol StorageCellDelegate: AnyObject{
+    func updateData()
     func openSafariLink(url: String)
 }
 
-final class Cell: UICollectionViewCell {
+final class StorageCell: UICollectionViewCell {
     
-    private let cData = CoreManager.shared
+    static let reuseId = "StorageCell"
     private var itemData: ItemData?
     private var url = String()
+    private var imageId = String()
     
-    static let reuseId = "Cell"
-    
-    weak var delegate: CellDelegate?
+    weak var delegate : StorageCellDelegate?
     
     //MARK: Init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        settupCell()
+        settupView()
         addSubview(activityIndicator)
     }
     
@@ -33,47 +33,79 @@ final class Cell: UICollectionViewCell {
     }
     
     //MARK: Functions
-    private func settupCell() {
+    private func settupView() {
         backgroundColor = .viewColor
-        addSubview(image)
-        addSubview(moveToStorageBtn)
-        
-        linkLabel.addGestureRecognizer(tapToLinkGesture)
-        linkLabel.isUserInteractionEnabled = true
-        
-        layer.cornerRadius = 20
-        layer.shadowRadius = 4
-        layer.shadowOpacity = 0.7
-        layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
-        let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: .allCorners, cornerRadii: CGSize(width: 20, height: 20)).cgPath
-        layer.shadowPath = path
-        layer.shadowColor = UIColor.black.cgColor
-        
-        NSLayoutConstraint.activate([
-            image.leadingAnchor.constraint(equalTo: leadingAnchor),
-            image.topAnchor.constraint(equalTo: topAnchor),
-            image.trailingAnchor.constraint(equalTo: trailingAnchor),
-            image.heightAnchor.constraint(equalToConstant: 250),
-            image.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 20),
-            
-            moveToStorageBtn.topAnchor.constraint(equalTo: image.topAnchor, constant: 25),
-            moveToStorageBtn.trailingAnchor.constraint(equalTo: image.trailingAnchor, constant: -20),
-        ])
-        
+        clipsToBounds = true
     }
     
-    func configCell(_ data: ItemData, image: UIImage) {
+    func configCellForVk(_ data: ItemData, image: UIImage, imageId: String) {
         self.itemData = data
-        if data.addStorage {
-            self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
-        } else {
-            self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
-        }
+        self.image.image = image
+        self.descriptionLabel.text = data.description
+        self.dateLabel.text = data.date
+        self.imageId = imageId
+        addSubview(cellView)
+        NSLayoutConstraint.activate([
+            cellView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            cellView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            cellView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            cellView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            cellView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 40),
+        ])
+    }
+    
+    func stopActivity() {
+        activityIndicator.stopAnimating()
+        activityIndicator.removeFromSuperview()
+    }
+    //MARK: View elements
+    private lazy var cellView: UIView = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.addSubview(image)
+        $0.addSubview(deleteToStorageBtn)
+        $0.addSubview(dateLabel)
+        $0.addSubview(descriptionLabel)
+    
+        NSLayoutConstraint.activate([
+            image.leadingAnchor.constraint(equalTo: $0.leadingAnchor, constant: 1),
+            image.topAnchor.constraint(equalTo: $0.topAnchor, constant: 1),
+            image.trailingAnchor.constraint(equalTo: $0.trailingAnchor, constant: -1),
+    
+            deleteToStorageBtn.topAnchor.constraint(equalTo: image.topAnchor, constant: 25),
+            deleteToStorageBtn.trailingAnchor.constraint(equalTo: image.trailingAnchor, constant: -20),
+    
+            dateLabel.leadingAnchor.constraint(equalTo: $0.leadingAnchor, constant: 20),
+            dateLabel.topAnchor.constraint(equalTo: image.bottomAnchor, constant: 10),
+    
+            descriptionLabel.leadingAnchor.constraint(equalTo: $0.leadingAnchor, constant: 20),
+            descriptionLabel.trailingAnchor.constraint(equalTo: $0.trailingAnchor, constant: -20),
+            descriptionLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 5),
+            descriptionLabel.bottomAnchor.constraint(equalTo: $0.bottomAnchor, constant: -5),
+        ])
+        return $0
+    }(UIView())
+    
+    func configCellForNews(_ data: ItemData, image: UIImage, imageId: String) {
+        self.imageId = imageId
+        addSubview(self.image)
+        addSubview(deleteToStorageBtn)
+        NSLayoutConstraint.activate([
+            self.image.leadingAnchor.constraint(equalTo: leadingAnchor),
+            self.image.topAnchor.constraint(equalTo: topAnchor),
+            self.image.trailingAnchor.constraint(equalTo: trailingAnchor),
+            self.image.heightAnchor.constraint(equalToConstant: 250),
+            self.image.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 20),
+            
+            deleteToStorageBtn.topAnchor.constraint(equalTo: self.image.topAnchor, constant: 25),
+            deleteToStorageBtn.trailingAnchor.constraint(equalTo: self.image.trailingAnchor, constant: -20),
+        ])
         self.image.image = image
         if let link = data.link {
             self.url = link
             self.linkLabel.text = link.toHost
             addSubview(linkLabel)
+            self.linkLabel.addGestureRecognizer(tapToLinkGesture)
+            self.linkLabel.isUserInteractionEnabled = true
             NSLayoutConstraint.activate([
                 linkLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
                 linkLabel.topAnchor.constraint(equalTo: self.image.bottomAnchor, constant: 10),
@@ -132,24 +164,14 @@ final class Cell: UICollectionViewCell {
             }
         }
     }
-    
-    func stopActivity() {
-        activityIndicator.stopAnimating()
-        activityIndicator.removeFromSuperview()
-    }
-    
-    //MARK: View
-    private lazy var tapToLinkGesture: UITapGestureRecognizer = {
-        $0.addTarget(self, action: #selector(moveToSafari(sender: )))
-        return $0
-    }(UITapGestureRecognizer())
-    
-    private lazy var moveToStorageBtn: UIButton = {
+
+    private lazy var deleteToStorageBtn: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.isUserInteractionEnabled = true
         $0.tintColor = .black
+        $0.setImage(UIImage(systemName: "star.fill"), for: .normal)
         return $0
-    }(UIButton(primaryAction: moveToStorageAction))
+    }(UIButton(primaryAction: deleteFromStorageAction))
     
     private lazy var activityIndicator: UIActivityIndicatorView = {
         $0.style = .large
@@ -159,10 +181,10 @@ final class Cell: UICollectionViewCell {
         return $0
     }(UIActivityIndicatorView())
     
-    private lazy var linkLabel = ViewManager.getLinkLabel()
-    private lazy var titleLabel = ViewManager.getLabel("",textColor: .black, textAligment: .left, font: .boldSystemFont(ofSize: 20))
     private lazy var descriptionLabel = ViewManager.getLabel("",textColor: .black ,textAligment: .left, font: .systemFont(ofSize: 14), numberOfLines: 10)
     private lazy var dateLabel = ViewManager.getLabel("",textColor: .lightGray,textAligment: .left, font: .systemFont(ofSize: 14))
+    private lazy var linkLabel = ViewManager.getLinkLabel()
+    private lazy var titleLabel = ViewManager.getLabel("",textColor: .black, textAligment: .left, font: .boldSystemFont(ofSize: 20))
     
     private lazy var image: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -170,39 +192,34 @@ final class Cell: UICollectionViewCell {
         $0.backgroundColor = .black
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 20
+        $0.heightAnchor.constraint(equalToConstant: 250).isActive = true
         return $0
     }(UIImageView())
-    //MARK: Action
-    private lazy var moveToStorageAction = UIAction { [weak self] _ in
+    
+    private lazy var tapToLinkGesture: UITapGestureRecognizer = {
+        $0.addTarget(self, action: #selector(openSafariLinkAction(sender: )))
+        return $0
+    }(UITapGestureRecognizer())
+    //MARK: Action elements
+    private lazy var deleteFromStorageAction = UIAction { [weak self] _ in
         guard let self else { return }
-        guard let image = self.image.image else { return }
-        guard let imageData = image.jpegData(compressionQuality: 1) else { return }
-        guard let itemData else { return }
-        guard let date = itemData.date else { return }
-        let storage = StorageManager()
-        let posts = cData.posts
-        
-        if itemData.addStorage {
-            for post in posts {
-                if let id = post.id {
-                    if id == "\(itemData.id)\(date)" {
-                        self.itemData?.addStorage = false
-                        self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
-                        post.deleteData()
-                        storage.deleteImg("\(itemData.id)\(date)")
-                    }
-                }
-            }
-        } else {
-            self.itemData?.addStorage = true
-            self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
-            cData.createData(item: itemData)
-            storage.saveImage(imageData, imageName: "\(itemData.id)\(date)")
+        let storageManager = StorageManager()
+        storageManager.deleteImg(imageId)
+        let cData = CoreManager.shared
+        print(self.imageId)
+        for post in cData.posts where post.id == self.imageId {
+            post.deleteData()
         }
-
+        delegate?.updateData()
     }
     
-    @objc func moveToSafari(sender: UITapGestureRecognizer) {
-        delegate?.openSafariLink(url: self.url)
+    @objc
+    func openSafariLinkAction(sender: UITapGestureRecognizer) {
+        delegate?.openSafariLink(url: url)
     }
+    
 }
+
+
+
+

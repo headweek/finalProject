@@ -38,6 +38,11 @@ final class NewsController: UIViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collection.reloadData()
+    }
+    
     func updateNavigationBar() {
         
         view.addSubview(profileImageView)
@@ -147,9 +152,35 @@ extension NewsController: UITextFieldDelegate {
             switch result {
             case .success(let newsData):
                 var newsModel = [ItemData]()
+                
                 for items in newsData.articles {
                     if let id = items.source.id {
-                        let item = ItemData(id: id, imageURL: items.urlToImage, link: items.url, date: items.publishedAt, description: items.description, title: items.title, content: items.content, author: items.author, addStorage: false)
+                        var isAddStorage = false
+                        
+                        let storgateData = CoreManager.shared.posts
+                        
+                        var date = String()
+                        
+                        if let dateStr = items.publishedAt {
+                            for char in dateStr {
+                                if char != "T"  {
+                                    date += String(char)
+                                } else { break }
+                                
+                            }
+                        }
+                        
+                        for storageItem in storgateData {
+                            let itemId = "\(id)\(date)"
+                            
+                            if let storageId = storageItem.id {
+                                if itemId == storageId {
+                                    isAddStorage = true
+                                }
+                            }
+                            
+                        }
+                        let item = ItemData(id: id, imageURL: items.urlToImage, link: items.url, date: date, description: items.description, title: items.title, content: items.content, author: items.author, addStorage: isAddStorage)
                         newsModel.append(item)
                     }
                 }

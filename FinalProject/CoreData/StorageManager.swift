@@ -21,11 +21,16 @@ final class StorageManager {
         }
     }
     
-    func loadImage(_ fileName: String) -> Data {
+    func loadImage(_ fileName: String) -> Data? {
         var path = url
-        path.append(path: fileName)
-        guard let imgData = try? Data(contentsOf: path) else { return Data() }
-        return imgData
+        path.append(path: "\(fileName).jpg")
+        do {
+            let img = try Data(contentsOf: path)
+            return img
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
     
     func deleteImg(_ fileName: String) {

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		18083A362BCE57930023ABF9 /* VKCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18083A352BCE57930023ABF9 /* VKCell.swift */; };
+		181907FD2BD1977A0053D0D2 /* StorageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181907FC2BD1977A0053D0D2 /* StorageCell.swift */; };
 		1855E7392BCD329F00A64C5E /* TimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1855E7382BCD329F00A64C5E /* TimeManager.swift */; };
 		186BFBC42BBC3F64002BD428 /* AnimateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186BFBC32BBC3F64002BD428 /* AnimateManager.swift */; };
 		186BFBC62BBC420C002BD428 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186BFBC52BBC420B002BD428 /* TabBar.swift */; };
@@ -42,6 +43,7 @@
 
 /* Begin PBXFileReference section */
 		18083A352BCE57930023ABF9 /* VKCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VKCell.swift; sourceTree = "<group>"; };
+		181907FC2BD1977A0053D0D2 /* StorageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageCell.swift; sourceTree = "<group>"; };
 		1855E7382BCD329F00A64C5E /* TimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeManager.swift; sourceTree = "<group>"; };
 		186BFBC32BBC3F64002BD428 /* AnimateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimateManager.swift; sourceTree = "<group>"; };
 		186BFBC52BBC420B002BD428 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				18934B5D2BC2B87D00E15DBD /* NewsCell.swift */,
 				18934B612BC2BBCC00E15DBD /* Header.swift */,
 				18083A352BCE57930023ABF9 /* VKCell.swift */,
+				181907FC2BD1977A0053D0D2 /* StorageCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -307,6 +310,7 @@
 				18083A362BCE57930023ABF9 /* VKCell.swift in Sources */,
 				186BFBCC2BBC4271002BD428 /* VKController.swift in Sources */,
 				9B119DCB2BC73C1F0097C032 /* ProfileViewModel.swift in Sources */,
+				181907FD2BD1977A0053D0D2 /* StorageCell.swift in Sources */,
 				9B119DCF2BC73C680097C032 /* UserResponce.swift in Sources */,
 				9BAEE99B2BB9E4D400465882 /* WebViewController.swift in Sources */,
 				186BFBC62BBC420C002BD428 /* TabBar.swift in Sources */,
