@@ -47,6 +47,8 @@ extension CData : Identifiable {
     
     func deleteData () {
         managedObjectContext?.delete(self)
+        let cManager = CoreManager.shared
+        cManager.readData()
         try? managedObjectContext?.save()
     }
     

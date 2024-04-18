@@ -26,6 +26,11 @@ final class StorageController: UIViewController {
     }(UILabel())
     
     //MARK: ViewLifeCycle
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collection.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         settupView()
@@ -74,15 +79,14 @@ final class StorageController: UIViewController {
     private lazy var collection: UICollectionView = {
         $0.dataSource = self
         $0.delegate = self
-        //тут нужно поменять ячейку, пока тестово
-        $0.register(VKCell.self, forCellWithReuseIdentifier: VKCell.reuseId)
+        $0.register(StorageCell.self, forCellWithReuseIdentifier: StorageCell.reuseId)
         $0.register(Header.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Header.reuseId)
         return $0
     }(UICollectionView(frame: view.bounds, collectionViewLayout: layout))
     
     private lazy var layout: UICollectionViewFlowLayout = {
         $0.scrollDirection = .vertical
-        $0.itemSize = CGSize(width: view.frame.width, height: 100)
+        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         $0.headerReferenceSize = CGSize(width: view.bounds.width, height: 90)
         return $0
     }(UICollectionViewFlowLayout())
@@ -96,8 +100,23 @@ extension StorageController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: VKCell.reuseId, for: indexPath)
-        cell.backgroundColor = .red
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StorageCell.reuseId, for: indexPath) as? StorageCell else { return UICollectionViewCell() }
+        let storageManager = StorageManager()
+        cell.delegate = self
+        let data = cData.posts[indexPath.item]
+        if let id = data.id {
+            let item = ItemData(id: id, imageURL: data.image, link: data.link, date: data.date, description: data.discription, title: data.title, content: nil, author: nil, addStorage: true)
+            if let imageData = storageManager.loadImage(item.id) {
+                if let image = UIImage(data: imageData) {
+                    if item.link == nil {
+                        cell.configCellForVk(item, image: image, imageId: item.id)
+                    } else {
+                        cell.configCellForNews(item, image: image, imageId: item.id)
+                    }
+                }
+            }
+        }
+        cell.stopActivity()
         return cell
     }
     
@@ -110,4 +129,15 @@ extension StorageController: UICollectionViewDataSource {
 
 extension StorageController: UICollectionViewDelegate {
     
+}
+
+extension StorageController: StorageCellDelegate {
+    func updateData() {
+        self.collection.reloadData()
+    }
+    
+    func openSafariLink(url: String) {
+        guard let url = URL(string: url) else { return }
+        UIApplication.shared.open(url)
+    }
 }
