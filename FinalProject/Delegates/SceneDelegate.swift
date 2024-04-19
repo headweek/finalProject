@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let scene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: scene)
-        if UserDefaults.standard.string(forKey: "access_token") != nil {
+        if UserDefaults.standard.string(forKey: .accessToken) != nil {
             window.rootViewController = TabBar()
         } else {
             window.rootViewController = UINavigationController(rootViewController: ViewController())
