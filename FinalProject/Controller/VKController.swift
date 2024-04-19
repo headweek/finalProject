@@ -29,6 +29,9 @@ final class VKController: UIViewController {
     //MARK: ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadDataByNotify(notification: )), name: NSNotification.Name("reloadData"), object: nil)
+        
         view.backgroundColor = .viewColor
         getData()
         //new
@@ -90,6 +93,17 @@ final class VKController: UIViewController {
     }
     
     //MARK: Funcitons
+    
+    @objc
+    func reloadDataByNotify(notification: Notification) {
+        guard let newData = notification.userInfo?["reloadData"] as? ItemData else { return }
+        self.vkData.forEach { item in
+            if let index = self.vkData.firstIndex(where: { $0.description == newData.description }) {
+                self.vkData[index].addStorage = newData.addStorage
+            }
+        }
+    }
+    
     private func getData() {
         VKService.getWall { [weak self] result in
             guard let self else { return }
@@ -124,11 +138,11 @@ final class VKController: UIViewController {
                     var isAddStorage = false
                     
                     let storgateData = CoreManager.shared.posts
-                    
                     for storageItem in storgateData {
                         let itemId = "\(id)\(date)"
-                        
+                        print("itemId = \(itemId)")
                         if let storageId = storageItem.id {
+                            print("storageId = \(storageId)")
                             if itemId == storageId {
                                 isAddStorage = true
                             }
@@ -208,6 +222,7 @@ extension VKController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: VKCell.reuseId, for: indexPath) as? VKCell else { return UICollectionViewCell() }
+        cell.delegate = self
         let data = vkData[indexPath.item]
         guard let urlString = data.imageURL else { return UICollectionViewCell() }
         guard let image = self.images[urlString] else { return UICollectionViewCell() }
@@ -227,3 +242,13 @@ extension VKController: UICollectionViewDelegate {
     
 }
 
+extension VKController: VKCellDelegate {
+    func reloadData(itemData: ItemData?) {
+        guard let itemData else { return }
+        self.vkData.forEach { item in
+            if let index = self.vkData.firstIndex(where: { $0.id == itemData.id }) {
+                self.vkData[index].addStorage = itemData.addStorage
+            }
+        }
+    }
+}

@@ -9,6 +9,7 @@ import UIKit
 
 protocol CellDelegate: AnyObject {
     func openSafariLink(url: String)
+    func reloadData(itemData: ItemData?)
 }
 
 final class Cell: UICollectionViewCell {
@@ -190,6 +191,7 @@ final class Cell: UICollectionViewCell {
                         self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
                         post.deleteData()
                         storage.deleteImg("\(itemData.id)\(date)")
+                        delegate?.reloadData(itemData: self.itemData)
                     }
                 }
             }
@@ -198,6 +200,7 @@ final class Cell: UICollectionViewCell {
             self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
             cData.createData(item: itemData)
             storage.saveImage(imageData, imageName: "\(itemData.id)\(date)")
+            delegate?.reloadData(itemData: self.itemData)
         }
 
     }

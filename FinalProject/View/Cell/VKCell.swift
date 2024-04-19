@@ -8,12 +8,18 @@
 import UIKit
 import CoreData
 
+protocol VKCellDelegate: AnyObject {
+    func reloadData(itemData: ItemData?)
+}
+
 final class VKCell: UICollectionViewCell {
     
     private var imageName = String()
     private let cData = CoreManager.shared
     private var itemData: ItemData?
     var stor = StorageCell()
+    
+    weak var delegate: VKCellDelegate?
     
     static let reuseId = "VKCell"
     //MARK: Init
@@ -135,6 +141,7 @@ final class VKCell: UICollectionViewCell {
                         self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
                         post.deleteData()
                         storage.deleteImg("\(itemData.id)\(date)")
+                        delegate?.reloadData(itemData: self.itemData)
                     }
                 }
             }
@@ -143,6 +150,7 @@ final class VKCell: UICollectionViewCell {
             self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
             cData.createData(item: itemData)
             storage.saveImage(imageData, imageName: "\(itemData.id)\(date)")
+            delegate?.reloadData(itemData: self.itemData)
         }
     }
 }
