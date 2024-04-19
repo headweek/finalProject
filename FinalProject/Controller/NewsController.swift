@@ -38,6 +38,10 @@ final class NewsController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadDataByNotify(notification: )), name: NSNotification.Name("reloadData"), object: nil)
         
+        if let lustSearch = UserDefaults.standard.string(forKey: .lustSearch) {
+            loadNews(lustSearch)
+        }
+        
         settupView()
         profileViewModel.loadProfileInfo { [weak self] in
             DispatchQueue.main.async {
@@ -97,6 +101,74 @@ final class NewsController: UIViewController {
     }
 
     //MARK: Funcitons
+    private func loadNews(_ text: String) {
+        NewsServices.getNews(q: text, pageSize: 10) { result in
+            switch result {
+            case .success(let newsData):
+                var newsModel = [ItemData]()
+                
+                for items in newsData.articles {
+                    if let id = items.source.id {
+                        var isAddStorage = false
+                        
+                        let storgateData = CoreManager.shared.posts
+                        
+                        var date = String()
+                        
+                        if let dateStr = items.publishedAt {
+                            for char in dateStr {
+                                if char != "T"  {
+                                    date += String(char)
+                                } else { break }
+                                
+                            }
+                        }
+                        
+                        for storageItem in storgateData {
+                            let itemId = "\(id)\(date)"
+                            print("itemId -> \(itemId)")
+                            if let storageId = storageItem.id {
+                                print("storageId = \(storageId)")
+                                if itemId == storageId {
+                                    isAddStorage = true
+                                }
+                            }
+                            
+                        }
+                        let item = ItemData(id: id, imageURL: items.urlToImage, link: items.url, date: date, description: items.description, title: items.title, content: items.content, author: items.author, addStorage: isAddStorage)
+                        newsModel.append(item)
+                    }
+                }
+                
+                var countItems = newsModel.count
+                
+                self.newsData = newsModel
+                
+                for item in newsModel {
+                    if let urlString = item.imageURL {
+                        if let url = URL(string: urlString) {
+                            ImageLoader.loadImage(from: url) { image in
+                                if let image = image {
+                                    self.getImages(image, imageName: urlString)
+                                    countItems -= 1
+                                    if countItems == 0 {
+                                        DispatchQueue.main.async {
+                                            self.collection.reloadData()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     @objc
     func reloadDataByNotify(notification: Notification) {
         guard let newData = notification.userInfo?["reloadData"] as? ItemData else { return }
@@ -185,72 +257,8 @@ extension NewsController: UICollectionViewDelegate {
 extension NewsController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let text = textField.text else { return true }
-        NewsServices.getNews(q: text, pageSize: 10) { result in
-            switch result {
-            case .success(let newsData):
-                var newsModel = [ItemData]()
-                
-                for items in newsData.articles {
-                    if let id = items.source.id {
-                        var isAddStorage = false
-                        
-                        let storgateData = CoreManager.shared.posts
-                        
-                        var date = String()
-                        
-                        if let dateStr = items.publishedAt {
-                            for char in dateStr {
-                                if char != "T"  {
-                                    date += String(char)
-                                } else { break }
-                                
-                            }
-                        }
-                        
-                        for storageItem in storgateData {
-                            let itemId = "\(id)\(date)"
-                            print("itemId -> \(itemId)")
-                            if let storageId = storageItem.id {
-                                print("storageId = \(storageId)")
-                                if itemId == storageId {
-                                    isAddStorage = true
-                                }
-                            }
-                            
-                        }
-                        let item = ItemData(id: id, imageURL: items.urlToImage, link: items.url, date: date, description: items.description, title: items.title, content: items.content, author: items.author, addStorage: isAddStorage)
-                        newsModel.append(item)
-                    }
-                }
-                
-                var countItems = newsModel.count
-                
-                self.newsData = newsModel
-                
-                for item in newsModel {
-                    if let urlString = item.imageURL {
-                        if let url = URL(string: urlString) {
-                            ImageLoader.loadImage(from: url) { image in
-                                if let image = image {
-                                    self.getImages(image, imageName: urlString)
-                                    countItems -= 1
-                                    if countItems == 0 {
-                                        DispatchQueue.main.async {
-                                            self.collection.reloadData()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-                
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-        
+        loadNews(text)
+        UserDefaults.standard.setValue(text, forKey: .lustSearch)
         self.searchController.isActive = false
         return true
     }
