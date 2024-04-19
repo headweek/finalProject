@@ -55,7 +55,7 @@ final class Cell: UICollectionViewCell {
             image.topAnchor.constraint(equalTo: topAnchor),
             image.trailingAnchor.constraint(equalTo: trailingAnchor),
             image.heightAnchor.constraint(equalToConstant: 250),
-            image.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 20),
+            image.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 42),
             
             moveToStorageBtn.topAnchor.constraint(equalTo: image.topAnchor, constant: 25),
             moveToStorageBtn.trailingAnchor.constraint(equalTo: image.trailingAnchor, constant: -20),
@@ -167,12 +167,14 @@ final class Cell: UICollectionViewCell {
     
     private lazy var image: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.contentMode = .scaleAspectFill
+        $0.contentMode = .scaleToFill
         $0.backgroundColor = .black
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 20
+        $0.heightAnchor.constraint(equalToConstant: 250).isActive = true
         return $0
     }(UIImageView())
+    
     //MARK: Action
     private lazy var moveToStorageAction = UIAction { [weak self] _ in
         guard let self else { return }

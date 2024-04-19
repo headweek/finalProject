@@ -16,9 +16,14 @@ final class NewsController: UIViewController {
     
     lazy var profileImageView: UIImageView = {
         $0.contentMode = .scaleAspectFit
+        $0.backgroundColor = .red
         $0.clipsToBounds = true
+        $0.layer.cornerRadius = 15
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        $0.heightAnchor.constraint(equalToConstant: 32).isActive = true
         return $0
-    }(UIImageView(frame: CGRect(x: 0, y: 0, width: 32, height: 32)))
+    }(UIImageView())
     
     lazy var nameLabel: UILabel = {
         $0.font = UIFont.systemFont(ofSize: 14)
@@ -67,6 +72,7 @@ final class NewsController: UIViewController {
         
         let moreButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(moreButtonTapped))
         navigationItem.rightBarButtonItem = moreButton
+        
     }
     
     func logoutFromVK() {

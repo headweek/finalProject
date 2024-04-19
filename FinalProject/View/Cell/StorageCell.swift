@@ -189,7 +189,7 @@ final class StorageCell: UICollectionViewCell {
     
     private lazy var image: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.contentMode = .scaleAspectFill
+        $0.contentMode = .scaleToFill
         $0.backgroundColor = .black
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 20

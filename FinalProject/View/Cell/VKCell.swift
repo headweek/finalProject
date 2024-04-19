@@ -116,13 +116,14 @@ final class VKCell: UICollectionViewCell {
     
     private lazy var image: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.contentMode = .scaleAspectFill
+        $0.contentMode = .scaleToFill
         $0.backgroundColor = .black
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 20
         $0.heightAnchor.constraint(equalToConstant: 250).isActive = true
         return $0
     }(UIImageView())
+    
     //MARK: Action elements
     private lazy var moveToStorageAction = UIAction { [weak self] _ in
         guard let self else { return }
