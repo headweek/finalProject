@@ -67,9 +67,26 @@ final class VKController: UIViewController {
         let moreButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(moreButtonTapped))
         navigationItem.rightBarButtonItem = moreButton
     }
+    
+    func logoutFromVK() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+            let logoutAction = UIAlertAction(title: "Выход", style: .destructive) { _ in
+                UserDefaults.standard.removeObject(forKey: .accessToken)
+                UserDefaults.standard.synchronize()
+                NotificationCenter.default.post(name: NSNotification.Name("changeVc"), object: nil, userInfo: ["isLogin" : false])
+            }
+            alertController.addAction(logoutAction)
+
+            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+            alertController.addAction(cancelAction)
+
+            present(alertController, animated: true, completion: nil)
+    }
 
     @objc func moreButtonTapped() {
         //выход из ВК
+        logoutFromVK()
     }
     
     //MARK: Funcitons

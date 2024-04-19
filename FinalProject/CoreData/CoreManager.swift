@@ -68,4 +68,17 @@ class CoreManager {
         }
     }
     
+    func isPostSavedInCoreData() -> Bool {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<CData> = CData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@")
+        do {
+            let results = try context.fetch(fetchRequest)
+            return !results.isEmpty
+        } catch {
+            print("Error fetching post: \(error)")
+            return false
+        }
+    }
+    
 }

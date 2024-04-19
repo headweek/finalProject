@@ -6,11 +6,14 @@
 //
 
 import UIKit
+import CoreData
 
 final class VKCell: UICollectionViewCell {
+    
     private var imageName = String()
     private let cData = CoreManager.shared
     private var itemData: ItemData?
+    var stor = StorageCell()
     
     static let reuseId = "VKCell"
     //MARK: Init
@@ -32,7 +35,8 @@ final class VKCell: UICollectionViewCell {
     
     func configCell(_ data: ItemData, image: UIImage) {
         self.itemData = data
-        if data.addStorage {
+        
+        if data.addStorage == true{
             self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
         } else {
             self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
