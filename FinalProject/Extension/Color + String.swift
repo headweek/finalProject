@@ -14,6 +14,7 @@ extension UIColor {
 
 extension String {
     static let accessToken = "access_token"
+    static let lustSearch = "lustSearch"
 }
 
 extension String {
