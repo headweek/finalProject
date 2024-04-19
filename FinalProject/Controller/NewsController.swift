@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AudioToolbox
 
 final class NewsController: UIViewController {
 
@@ -35,7 +36,7 @@ final class NewsController: UIViewController {
     //MARK: ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(reloadDataByNotify(notification: )), name: NSNotification.Name("reloadData"), object: nil)
         
         if let lustSearch = UserDefaults.standard.string(forKey: .lustSearch) {
@@ -105,6 +106,7 @@ final class NewsController: UIViewController {
         NewsServices.getNews(q: text, pageSize: 10) { result in
             switch result {
             case .success(let newsData):
+                AudioServicesPlaySystemSound(SystemSoundID(1033))
                 var newsModel = [ItemData]()
                 
                 for items in newsData.articles {
@@ -126,9 +128,7 @@ final class NewsController: UIViewController {
                         
                         for storageItem in storgateData {
                             let itemId = "\(id)\(date)"
-                            print("itemId -> \(itemId)")
                             if let storageId = storageItem.id {
-                                print("storageId = \(storageId)")
                                 if itemId == storageId {
                                     isAddStorage = true
                                 }

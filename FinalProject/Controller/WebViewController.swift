@@ -45,7 +45,6 @@ protocol WebViewDelegate: AnyObject {
 extension WebViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        print("WebView")
         delegate?.didFinish()
     }
     
@@ -65,8 +64,6 @@ extension WebViewController: WKNavigationDelegate {
             
             if let accessToken = parameters["access_token"], let userId = parameters["user_id"] {
                 // успешно
-                print("User authorized: \(userId)")
-                print("Access Token: \(accessToken)")
                 UserDefaults.standard.setValue(accessToken, forKey: "access_token")
                 NotificationCenter.default.post(name: NSNotification.Name("changeVc"), object: nil, userInfo: ["isLogin" : true])
                 

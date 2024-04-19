@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AudioToolbox
 
 final class VKController: UIViewController {
     //new
@@ -110,6 +111,7 @@ final class VKController: UIViewController {
     
     private func getData() {
         VKService.getWall { [weak self] result in
+            AudioServicesPlaySystemSound(SystemSoundID(1030))
             guard let self else { return }
             switch result {
             case .success(let vkData):
@@ -144,9 +146,7 @@ final class VKController: UIViewController {
                     let storgateData = CoreManager.shared.posts
                     for storageItem in storgateData {
                         let itemId = "\(id)\(date)"
-                        print("itemId = \(itemId)")
                         if let storageId = storageItem.id {
-                            print("storageId = \(storageId)")
                             if itemId == storageId {
                                 isAddStorage = true
                             }
