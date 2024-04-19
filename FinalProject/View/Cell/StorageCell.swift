@@ -58,34 +58,9 @@ final class StorageCell: UICollectionViewCell {
         activityIndicator.stopAnimating()
         activityIndicator.removeFromSuperview()
     }
-    //MARK: View elements
-    private lazy var cellView: UIView = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.addSubview(image)
-        $0.addSubview(deleteToStorageBtn)
-        $0.addSubview(dateLabel)
-        $0.addSubview(descriptionLabel)
-    
-        NSLayoutConstraint.activate([
-            image.leadingAnchor.constraint(equalTo: $0.leadingAnchor, constant: 1),
-            image.topAnchor.constraint(equalTo: $0.topAnchor, constant: 1),
-            image.trailingAnchor.constraint(equalTo: $0.trailingAnchor, constant: -1),
-    
-            deleteToStorageBtn.topAnchor.constraint(equalTo: image.topAnchor, constant: 25),
-            deleteToStorageBtn.trailingAnchor.constraint(equalTo: image.trailingAnchor, constant: -20),
-    
-            dateLabel.leadingAnchor.constraint(equalTo: $0.leadingAnchor, constant: 20),
-            dateLabel.topAnchor.constraint(equalTo: image.bottomAnchor, constant: 10),
-    
-            descriptionLabel.leadingAnchor.constraint(equalTo: $0.leadingAnchor, constant: 20),
-            descriptionLabel.trailingAnchor.constraint(equalTo: $0.trailingAnchor, constant: -20),
-            descriptionLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 5),
-            descriptionLabel.bottomAnchor.constraint(equalTo: $0.bottomAnchor, constant: -5),
-        ])
-        return $0
-    }(UIView())
     
     func configCellForNews(_ data: ItemData, image: UIImage, imageId: String) {
+        self.itemData = data
         self.imageId = imageId
         addSubview(self.image)
         addSubview(deleteToStorageBtn)
@@ -164,6 +139,32 @@ final class StorageCell: UICollectionViewCell {
             }
         }
     }
+    //MARK: View elements
+    private lazy var cellView: UIView = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.addSubview(image)
+        $0.addSubview(deleteToStorageBtn)
+        $0.addSubview(dateLabel)
+        $0.addSubview(descriptionLabel)
+    
+        NSLayoutConstraint.activate([
+            image.leadingAnchor.constraint(equalTo: $0.leadingAnchor, constant: 1),
+            image.topAnchor.constraint(equalTo: $0.topAnchor, constant: 1),
+            image.trailingAnchor.constraint(equalTo: $0.trailingAnchor, constant: -1),
+    
+            deleteToStorageBtn.topAnchor.constraint(equalTo: image.topAnchor, constant: 25),
+            deleteToStorageBtn.trailingAnchor.constraint(equalTo: image.trailingAnchor, constant: -20),
+    
+            dateLabel.leadingAnchor.constraint(equalTo: $0.leadingAnchor, constant: 20),
+            dateLabel.topAnchor.constraint(equalTo: image.bottomAnchor, constant: 10),
+    
+            descriptionLabel.leadingAnchor.constraint(equalTo: $0.leadingAnchor, constant: 20),
+            descriptionLabel.trailingAnchor.constraint(equalTo: $0.trailingAnchor, constant: -20),
+            descriptionLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 5),
+            descriptionLabel.bottomAnchor.constraint(equalTo: $0.bottomAnchor, constant: -5),
+        ])
+        return $0
+    }(UIView())
 
     private lazy var deleteToStorageBtn: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -209,6 +210,10 @@ final class StorageCell: UICollectionViewCell {
         print(self.imageId)
         for post in cData.posts where post.id == self.imageId {
             post.deleteData()
+        }
+        self.itemData?.addStorage = false
+        if let itemData {
+            NotificationCenter.default.post(name: Notification.Name("reloadData"), object: nil, userInfo: ["reloadData": itemData])
         }
         delegate?.updateData()
     }

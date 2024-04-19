@@ -30,6 +30,9 @@ final class NewsController: UIViewController {
     //MARK: ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadDataByNotify(notification: )), name: NSNotification.Name("reloadData"), object: nil)
+        
         settupView()
         profileViewModel.loadProfileInfo { [weak self] in
             DispatchQueue.main.async {
@@ -88,6 +91,17 @@ final class NewsController: UIViewController {
     }
 
     //MARK: Funcitons
+    @objc
+    func reloadDataByNotify(notification: Notification) {
+        guard let newData = notification.userInfo?["reloadData"] as? ItemData else { return }
+        self.newsData.forEach { item in
+            if let index = self.newsData.firstIndex(where: { $0.description == newData.description }) {
+                self.newsData[index].addStorage = newData.addStorage
+            }
+        }
+    }
+
+    
     private func settupView() {
         view.backgroundColor = .viewColor
         view.addSubview(collection)
@@ -189,8 +203,9 @@ extension NewsController: UITextFieldDelegate {
                         
                         for storageItem in storgateData {
                             let itemId = "\(id)\(date)"
-                            
+                            print("itemId -> \(itemId)")
                             if let storageId = storageItem.id {
+                                print("storageId = \(storageId)")
                                 if itemId == storageId {
                                     isAddStorage = true
                                 }
@@ -236,6 +251,15 @@ extension NewsController: UITextFieldDelegate {
 }
 
 extension NewsController: CellDelegate {
+    func reloadData(itemData: ItemData?) {
+        guard let itemData else { return }
+        self.newsData.forEach { item in
+            if let index = self.newsData.firstIndex(where: { $0.id == itemData.id }) {
+                self.newsData[index].addStorage = itemData.addStorage
+            }
+        }
+    }
+    
     func openSafariLink(url: String) {
         guard let url = URL(string: url) else { return }
         UIApplication.shared.open(url)
