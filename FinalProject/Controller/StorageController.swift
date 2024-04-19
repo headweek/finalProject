@@ -94,13 +94,13 @@ final class StorageController: UIViewController {
     private func settupView() {
         view.backgroundColor = .viewColor
         view.addSubview(collection)
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!)
     }
     //MARK: View elements
     private lazy var collection: UICollectionView = {
         $0.dataSource = self
         $0.delegate = self
         $0.register(StorageCell.self, forCellWithReuseIdentifier: StorageCell.reuseId)
+        $0.register(StorageVKCell.self, forCellWithReuseIdentifier: StorageVKCell.reuseId)
         $0.register(Header.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Header.reuseId)
         return $0
     }(UICollectionView(frame: view.bounds, collectionViewLayout: layout))
@@ -121,23 +121,31 @@ extension StorageController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StorageCell.reuseId, for: indexPath) as? StorageCell else { return UICollectionViewCell() }
+        var cell = collectionView.dequeueReusableCell(withReuseIdentifier: StorageCell.reuseId, for: indexPath)
         let storageManager = StorageManager()
-        cell.delegate = self
         let data = cData.posts[indexPath.item]
         if let id = data.id {
             let item = ItemData(id: id, imageURL: data.image, link: data.link, date: data.date, description: data.discription, title: data.title, content: nil, author: nil, addStorage: true)
             if let imageData = storageManager.loadImage(item.id) {
                 if let image = UIImage(data: imageData) {
                     if item.link == nil {
-                        cell.configCellForVk(item, image: image, imageId: item.id)
+                        if let vkCell = collectionView.dequeueReusableCell(withReuseIdentifier: StorageVKCell.reuseId, for: indexPath) as? StorageVKCell {
+                            vkCell.configCellForVk(item, image: image, imageId: item.id)
+                            vkCell.delegate = self
+                            vkCell.stopActivity()
+                            cell = vkCell
+                        }
                     } else {
-                        cell.configCellForNews(item, image: image, imageId: item.id)
+                        if let newsCell = collectionView.dequeueReusableCell(withReuseIdentifier: StorageCell.reuseId, for: indexPath) as? StorageCell {
+                            newsCell.configCellForNews(item, image: image, imageId: item.id)
+                            newsCell.delegate = self
+                            newsCell.stopActivity()
+                            cell = newsCell
+                        }
                     }
                 }
             }
         }
-        cell.stopActivity()
         return cell
     }
     

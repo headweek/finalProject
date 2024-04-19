@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import AudioToolbox
 
 protocol VKCellDelegate: AnyObject {
     func reloadData(itemData: ItemData?)
@@ -17,7 +18,6 @@ final class VKCell: UICollectionViewCell {
     private var imageName = String()
     private let cData = CoreManager.shared
     private var itemData: ItemData?
-    var stor = StorageCell()
     
     weak var delegate: VKCellDelegate?
     
@@ -133,11 +133,11 @@ final class VKCell: UICollectionViewCell {
         guard let date = itemData.date else { return }
         let storage = StorageManager()
         let posts = cData.posts
-        
         if itemData.addStorage {
             for post in posts {
                 if let id = post.id {
                     if id == "\(itemData.id)\(date)" {
+                        AudioServicesPlaySystemSound(SystemSoundID(1016))
                         self.itemData?.addStorage = false
                         self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
                         post.deleteData()
@@ -147,6 +147,7 @@ final class VKCell: UICollectionViewCell {
                 }
             }
         } else {
+            AudioServicesPlaySystemSound(SystemSoundID(1004))
             self.itemData?.addStorage = true
             self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
             cData.createData(item: itemData)

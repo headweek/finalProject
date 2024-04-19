@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AudioToolbox
 
 protocol CellDelegate: AnyObject {
     func openSafariLink(url: String)
@@ -38,17 +39,11 @@ final class Cell: UICollectionViewCell {
         backgroundColor = .viewColor
         addSubview(image)
         addSubview(moveToStorageBtn)
-        
+        clipsToBounds = true
         linkLabel.addGestureRecognizer(tapToLinkGesture)
         linkLabel.isUserInteractionEnabled = true
         
         layer.cornerRadius = 20
-        layer.shadowRadius = 4
-        layer.shadowOpacity = 0.7
-        layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
-        let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: .allCorners, cornerRadii: CGSize(width: 20, height: 20)).cgPath
-        layer.shadowPath = path
-        layer.shadowColor = UIColor.black.cgColor
         
         NSLayoutConstraint.activate([
             image.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -188,7 +183,14 @@ final class Cell: UICollectionViewCell {
         if itemData.addStorage {
             for post in posts {
                 if let id = post.id {
+                    AudioServicesPlaySystemSound(SystemSoundID(1016))
                     if id == "\(itemData.id)\(date)" {
+                        self.itemData?.addStorage = false
+                        self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
+                        post.deleteData()
+                        storage.deleteImg("\(itemData.id)\(date)")
+                        delegate?.reloadData(itemData: self.itemData)
+                    } else if id == "\(itemData.id)" {
                         self.itemData?.addStorage = false
                         self.moveToStorageBtn.setImage(UIImage(systemName: "star"), for: .normal)
                         post.deleteData()
@@ -198,6 +200,7 @@ final class Cell: UICollectionViewCell {
                 }
             }
         } else {
+            AudioServicesPlaySystemSound(SystemSoundID(1004))
             self.itemData?.addStorage = true
             self.moveToStorageBtn.setImage(UIImage(systemName: "star.fill"), for: .normal)
             cData.createData(item: itemData)
